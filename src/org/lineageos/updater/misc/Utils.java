@@ -94,6 +94,7 @@ public class Utils {
     }
 
     public static boolean isCompatible(UpdateBaseInfo update) {
+        Log.d(TAG, "BUILD_VERSION: "+SystemProperties.get(Constants.PROP_BUILD_VERSION));
         if (update.getVersion().compareTo(SystemProperties.get(Constants.PROP_BUILD_VERSION)) < 0) {
             Log.d(TAG, update.getName() + " is older than current Android version");
             return false;
@@ -112,7 +113,7 @@ public class Utils {
 
     public static boolean canInstall(UpdateBaseInfo update) {
         return (SystemProperties.getBoolean(Constants.PROP_UPDATER_ALLOW_DOWNGRADING, false) ||
-                update.getTimestamp() > SystemProperties.getLong(Constants.PROP_BUILD_DATE, 0)) &&
+                update.getTimestamp() > 0) &&
                 update.getVersion().equalsIgnoreCase(
                         SystemProperties.get(Constants.PROP_BUILD_VERSION));
     }
@@ -127,6 +128,7 @@ public class Utils {
                 json.append(line);
             }
         }
+        Log.d(TAG, "Loaded json: " + json.toString());
 
         JSONObject obj = new JSONObject(json.toString());
         JSONArray updatesList = obj.getJSONArray("response");
@@ -159,10 +161,15 @@ public class Utils {
         if (serverUrl.trim().isEmpty()) {
             serverUrl = context.getString(R.string.updater_server_url);
         }
+        
+        incrementalVersion = incrementalVersion.split("\\.")[2];
 
-        return serverUrl.replace("{device}", device)
-                .replace("{type}", type)
-                .replace("{incr}", incrementalVersion);
+        String output = serverUrl.replace("{deviceName}", device)
+                            .replace("{date}", incrementalVersion);
+        
+        System.out.println("UPDATER_URL: " + output);
+        System.out.println("UPDATER_URL: " + incrementalVersion);
+        return output;
     }
 
     public static String getUpgradeBlockedURL(Context context) {
