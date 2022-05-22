@@ -263,6 +263,10 @@ public class UpdatesActivity extends UpdatesListActivity {
 
         List<UpdateInfo> updates = Utils.parseJson(jsonFile, true);
         List<String> updatesOnline = new ArrayList<>();
+        Log.d(TAG, "updates loaded: " + updates.size());
+        for (UpdateInfo update : updates) {
+            Log.d(TAG, "update: " + update);
+        }
         for (UpdateInfo update : updates) {
             newUpdates |= controller.addUpdate(update);
             updatesOnline.add(update.getDownloadId());
