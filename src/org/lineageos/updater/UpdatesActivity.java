@@ -148,10 +148,15 @@ public class UpdatesActivity extends UpdatesListActivity {
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
         }
-
+        long buildTimestamp = BuildInfoUtils.getBuildDateTimestamp();
         TextView headerTitle = findViewById(R.id.header_title);
-        headerTitle.setText(getString(R.string.header_title_text,
-                BuildInfoUtils.getBuildVersion()));
+        if (buildTimestamp > 1666396800) {
+            headerTitle.setText(getString(R.string.header_title_text,
+                "1.1"));
+        } else {
+            headerTitle.setText(getString(R.string.header_title_text,
+                "1.0"));
+        }
 
         updateLastCheckedString();
 
@@ -304,8 +309,10 @@ public class UpdatesActivity extends UpdatesListActivity {
             findViewById(R.id.no_new_updates_view).setVisibility(View.GONE);
             findViewById(R.id.recycler_view).setVisibility(View.VISIBLE);
             sortedUpdates.sort((u1, u2) -> Long.compare(u2.getTimestamp(), u1.getTimestamp()));
-            for (UpdateInfo update : sortedUpdates) {
-                updateIds.add(update.getDownloadId());
+            if (sortedUpdates.size() >= 1) {
+                if (!(BuildInfoUtils.getBuildDateTimestamp() >= sortedUpdates.get(0).getTimestamp())) {
+                    updateIds.add(sortedUpdates.get(0).getDownloadId());
+                }
             }
             mAdapter.setData(updateIds);
             mAdapter.notifyDataSetChanged();
