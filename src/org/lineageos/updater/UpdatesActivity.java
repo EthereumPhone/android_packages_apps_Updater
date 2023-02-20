@@ -150,7 +150,10 @@ public class UpdatesActivity extends UpdatesListActivity {
         }
         long buildTimestamp = BuildInfoUtils.getBuildDateTimestamp();
         TextView headerTitle = findViewById(R.id.header_title);
-        if (buildTimestamp > 1666396800) {
+        if (buildTimestamp > 1676279795) {
+            headerTitle.setText(getString(R.string.header_title_text,
+                "2.0"));
+        } else if (buildTimestamp > 1666396800) {
             headerTitle.setText(getString(R.string.header_title_text,
                 "1.1"));
         } else {
